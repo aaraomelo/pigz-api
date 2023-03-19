@@ -35,9 +35,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTime $updated_at = null;
 
-    #[ORM\Column]
-    private ?bool $isAdmin = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -99,18 +96,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUpdatedAt(\DateTime $updated_at): self
     {
         $this->updated_at = $updated_at;
-
-        return $this;
-    }
-
-    public function isIsAdmin(): ?bool
-    {
-        return $this->isAdmin;
-    }
-
-    public function setIsAdmin(bool $isAdmin): self
-    {
-        $this->isAdmin = $isAdmin;
 
         return $this;
     }

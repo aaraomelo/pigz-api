@@ -55,7 +55,6 @@ class UserController extends AbstractController
         $user->setPassword($hashedPassword);
         $user->setCreatedAt(new DateTimeImmutable('now', new DateTimeZone('America/Sao_Paulo')));
         $user->setUpdatedAt(new DateTime('now', new DateTimeZone('America/Sao_Paulo')));
-        $user->setIsAdmin($data['isAdmin']);
         $user->setRoles($data['roles']);
         $userRepository->save($user, true);
         return $this->json([
@@ -82,7 +81,6 @@ class UserController extends AbstractController
         $user->setEmail($data['email']);
         $user->setPassword($data['password']);
         $user->setUpdatedAt(new DateTime('now', new DateTimeZone('America/Sao_Paulo')));
-        $user->setIsAdmin($data['isAdmin']);
         $doctrine->getManager()->flush();
         return $this->json([
             'message' => 'User updated successfully!',
