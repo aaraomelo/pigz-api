@@ -58,9 +58,9 @@ class UserController extends AbstractController
         ManagerRegistry $doctrine,
         UserRepository $userRepository
     ): JsonResponse {
-        $data =  $request->request->all();
         $user = $userRepository->find($id);
         if (!$user) throw $this->createNotFoundException();
+        $data =  $request->request->all();
         $user->setName($data['name']);
         $user->setEmail($data['email']);
         $user->setPassword($data['password']);
@@ -71,5 +71,13 @@ class UserController extends AbstractController
             'message' => 'User updated successfully!',
             'data' => $user,
         ], 201);
+    }
+
+    #[Route('users/{id}', name: 'RemoveUser', methods: ['DELETE'])]
+    public function remove(int $id, UserRepository $userRepository): JsonResponse {
+        $user = $userRepository->find($id);
+        if (!$user) throw $this->createNotFoundException();
+        $userRepository->remove($user, true);
+        return $this->json('', 204);
     }
 }
