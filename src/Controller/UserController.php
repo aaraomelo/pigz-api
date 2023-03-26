@@ -19,7 +19,8 @@ class UserController extends AbstractController
 {
     public function __construct(
         private LoggerInterface $logger,
-    ) {}
+    ) {
+    }
 
     #[Route('users', name: 'ListUsers', methods: ['GET'])]
     public function index(UserRepository $userRepository): JsonResponse

@@ -22,7 +22,7 @@ security:
             pattern: ^/api
             stateless: true
             jwt:
-                authenticator: app.custom_authenticator
+                authenticator: jwt_guard_authenticator
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false

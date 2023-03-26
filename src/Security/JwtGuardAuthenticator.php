@@ -2,16 +2,17 @@
 
 namespace App\Security;
 
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\Authenticator\JWTAuthenticator;
 use Lexik\Bundle\JWTAuthenticationBundle\TokenExtractor\AuthorizationHeaderTokenExtractor;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
-class CustomAuthenticator extends JWTAuthenticator
+class JwtGuardAuthenticator extends JWTAuthenticator
 {
+
     public function getCredentials(Request $request)
     {
         $extractor = new AuthorizationHeaderTokenExtractor(
@@ -27,14 +28,19 @@ class CustomAuthenticator extends JWTAuthenticator
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        // TODO: Implement getUser() method.
+        try {
+            $data = $this->getJwtManager()->decode($credentials);
+            $username = $data['username'];
+            return $userProvider->loadUserByIdentifier($username);
+        } catch (JWTDecodeFailureException $e) {
+            throw new CustomUserMessageAuthenticationException('Invalid Token');
+        }
     }
 
     public function checkCredentials($credentials, UserInterface $user)
     {
-        // TODO: Implement checkCredentials() method.
+        return true;
     }
-
     // public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     // {
     //     // TODO: Implement onAuthenticationFailure() method.

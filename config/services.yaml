@@ -8,20 +8,20 @@ parameters:
 services:
     # default configuration for services in *this* file
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
+        autowire: true # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
-        resource: '../src/'
+        resource: "../src/"
         exclude:
-            - '../src/DependencyInjection/'
-            - '../src/Entity/'
-            - '../src/Kernel.php'
+            - "../src/DependencyInjection/"
+            - "../src/Entity/"
+            - "../src/Kernel.php"
 
-    app.custom_authenticator:
-        class: App\Security\CustomAuthenticator
+    jwt_guard_authenticator:
+        class: App\Security\JwtGuardAuthenticator
         parent: lexik_jwt_authentication.security.jwt_authenticator
         autowire: true
     # add more service definitions when explicit configuration is needed
