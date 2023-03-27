@@ -7,33 +7,52 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
+#[UniqueEntity('email', message: 'Email is already registered')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    protected ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    #[Assert\Length(
+        min: 3,
+        max: 50,
+        minMessage: 'Name must be at least {{ limit }} characters long',
+        maxMessage: 'Name cannot be longer than {{ limit }} characters',
+    )]
+    #[Assert\NotBlank(message: 'Name is required')]
+    protected ?string $name = null;
+
+    #[ORM\Column(name: 'email', type: 'string', length: 255, unique: true)]
+    #[Assert\Email(message: 'Email is not in the expected pattern')]
+    #[Assert\NotBlank(message: 'Email is required')]
+    protected ?string $email = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $email = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $password = null;
+    #[Assert\Length(
+        min: 3,
+        max: 20,
+        minMessage: 'Password must be at least {{ limit }} characters long',
+        maxMessage: 'Password cannot be longer than {{ limit }} characters',
+    )]
+    #[Assert\NotBlank(message: 'Password is required')]
+    protected ?string $password = null;
 
     #[ORM\Column(length: 255, type: Types::SIMPLE_ARRAY)]
-    private ?array $roles = null;
+    protected ?array $roles = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
+    protected ?\DateTimeImmutable $created_at = null;
 
     #[ORM\Column]
-    private ?\DateTime $updated_at = null;
+    protected ?\DateTime $updated_at = null;
 
     public function getId(): ?int
     {

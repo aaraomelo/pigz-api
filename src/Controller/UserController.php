@@ -3,23 +3,19 @@
 namespace App\Controller;
 
 use App\Service\UserService;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class UserController extends AbstractController
 {
-  public function __construct(
-    private UserService $userService,
-    private LoggerInterface $logger,
-  ) {
+  public function __construct(private UserService $userService)
+  {
   }
 
   #[Route('users', name: 'ListUsers', methods: ['GET'])]
-  #[IsGranted(attribute: 'ROLE_ADMIN')]
+  // #[IsGranted(attribute: 'ROLE_ADMIN')]
   public function index()
   {
     return $this->userService->findAll();

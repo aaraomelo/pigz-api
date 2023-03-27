@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Factory\JsonResponseFactory;
+use App\Factory\UserValidatorFactory;
 use App\Repository\UserRepository;
 use DateTime;
 use DateTimeImmutable;
@@ -20,12 +21,8 @@ class UserService
     private ManagerRegistry $managerRegistry,
     private UserPasswordHasherInterface $passwordHasher,
     private JsonResponseFactory $jsonResponseFactory,
+    private UserValidatorFactory $validator,
   ) {
-  }
-
-  public function json($array): JsonResponse
-  {
-    return $this->jsonResponseFactory->create($array);
   }
 
   public function findAll(): JsonResponse
@@ -43,20 +40,19 @@ class UserService
 
   public function save(array $data): JsonResponse
   {
-    $user = $this->userRepository->findOneBy(['email' => $data['email']]);
-    if ($user instanceof User)
-      throw new ErrorException('Email already exists', 409);
     $user = new User();
+    $user->setName($data['name']);
+    $user->setEmail($data['email']);
+    $user->setPassword($data['password']);
+    $user->setRoles($data['roles']);
+    $user->setCreatedAt(new DateTimeImmutable('now', new DateTimeZone('America/Sao_Paulo')));
+    $user->setUpdatedAt(new DateTime('now', new DateTimeZone('America/Sao_Paulo')));
+    $this->validator->validate($user);
     $hashedPassword = $this->passwordHasher->hashPassword(
       $user,
       $data['password']
     );
-    $user->setName($data['name']);
-    $user->setEmail($data['email']);
     $user->setPassword($hashedPassword);
-    $user->setCreatedAt(new DateTimeImmutable('now', new DateTimeZone('America/Sao_Paulo')));
-    $user->setUpdatedAt(new DateTime('now', new DateTimeZone('America/Sao_Paulo')));
-    $user->setRoles($data['roles']);
     $this->userRepository->save($user, true);
     return  $this->json($user);
   }
@@ -79,5 +75,10 @@ class UserService
       throw new ErrorException('User not found', 404);
     $this->userRepository->remove($user, true);
     return $this->json($user);
+  }
+
+  public function json($array, $status = 200): JsonResponse
+  {
+    return $this->jsonResponseFactory->create($array, $status);
   }
 }

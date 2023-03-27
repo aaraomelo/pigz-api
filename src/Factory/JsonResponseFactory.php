@@ -3,7 +3,6 @@
 namespace App\Factory;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -21,7 +20,9 @@ class JsonResponseFactory
         'data' => $data,
       ], JsonEncoder::FORMAT),
       $status,
-      array_merge($headers, ['Content-Type' => 'application/json;charset=UTF-8']),
+      array_merge($headers, [
+        'Content-Type' => 'application/json;charset=UTF-8'
+      ]),
       true
     );
   }
