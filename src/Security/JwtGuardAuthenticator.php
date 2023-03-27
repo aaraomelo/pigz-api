@@ -37,7 +37,7 @@ class JwtGuardAuthenticator extends JWTAuthenticator
         }
     }
 
-    public function checkCredentials($credentials, UserInterface $user)
+    public function checkCredentials($credentials, UserInterface $user): bool
     {
         return true;
     }
@@ -51,7 +51,7 @@ class JwtGuardAuthenticator extends JWTAuthenticator
     //     // TODO: Implement onAuthenticationSuccess() method.
     // }
 
-    public function supportsRememberMe()
+    public function supportsRememberMe(): bool
     {
         return false;
     }

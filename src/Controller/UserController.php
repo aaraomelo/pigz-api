@@ -12,8 +12,9 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class UserController extends AbstractController
 {
@@ -23,6 +24,7 @@ class UserController extends AbstractController
     }
 
     #[Route('users', name: 'ListUsers', methods: ['GET'])]
+    #[IsGranted(attribute: 'ROLE_ADMIN')]
     public function index(UserRepository $userRepository): JsonResponse
     {
         return $this->json([
@@ -34,7 +36,7 @@ class UserController extends AbstractController
     public function find(int $id, UserRepository $userRepository): JsonResponse
     {
         $user = $userRepository->find($id);
-        if (!$user) throw $this->createNotFoundException();
+        if (!$user instanceof \App\Entity\User) throw $this->createNotFoundException();
         return $this->json([
             'data' => $user,
         ]);
@@ -46,11 +48,7 @@ class UserController extends AbstractController
         UserRepository $userRepository,
         UserPasswordHasherInterface $passwordHasher
     ): JsonResponse {
-        if ($request->headers->get('Content-Type') == 'application/json') {
-            $data =  $request->toArray();
-        } else {
-            $data =  $request->request->all();
-        }
+        $data = $request->request->all();
         $user = new User();
         $hashedPassword = $passwordHasher->hashPassword(
             $user,
@@ -77,12 +75,8 @@ class UserController extends AbstractController
         UserRepository $userRepository
     ): JsonResponse {
         $user = $userRepository->find($id);
-        if (!$user) throw $this->createNotFoundException();
-        if ($request->headers->get('Content-Type') == 'application/json') {
-            $data =  $request->toArray();
-        } else {
-            $data =  $request->request->all();
-        }
+        if (!$user instanceof \App\Entity\User) throw $this->createNotFoundException();
+        $data = $request->request->all();
         $user->setName($data['name']);
         $user->setEmail($data['email']);
         $user->setPassword($data['password']);
@@ -94,11 +88,12 @@ class UserController extends AbstractController
         ], 201);
     }
 
+
     #[Route('users/{id}', name: 'RemoveUser', methods: ['DELETE'])]
     public function remove(int $id, UserRepository $userRepository): JsonResponse
     {
         $user = $userRepository->find($id);
-        if (!$user) throw $this->createNotFoundException();
+        if (!$user instanceof \App\Entity\User) throw $this->createNotFoundException();
         $userRepository->remove($user, true);
         return $this->json('', 204);
     }
