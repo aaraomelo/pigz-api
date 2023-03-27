@@ -14,32 +14,35 @@ class UserController extends AbstractController
   {
   }
 
-  #[Route('users', name: 'ListUsers', methods: ['GET'])]
-  // #[IsGranted(attribute: 'ROLE_ADMIN')]
+  #[Route('users', name: 'list-users', methods: ['GET'])]
+  #[IsGranted(attribute: 'ROLE_USER')]
   public function index()
   {
     return $this->userService->findAll();
   }
 
-  #[Route('users/{id}', name: 'FindUser', methods: ['GET'])]
+  #[Route('users/{id}', name: 'find-user', methods: ['GET'])]
+  #[IsGranted(attribute: 'ROLE_USER')]
   public function find(int $id)
   {
     return $this->userService->find($id);
   }
 
-  #[Route('users', name: 'CreateUser', methods: ['POST'])]
+  #[Route('users', name: 'create-user', methods: ['POST'])]
   public function create(Request $request)
   {
     return $this->userService->save($request->request->all());
   }
 
-  #[Route('users/{id}', name: 'UpdateUser', methods: ['PUT', 'PATCH'])]
+  #[Route('users/{id}', name: 'update-user', methods: ['PUT', 'PATCH'])]
+  #[IsGranted(attribute: 'ROLE_USER')]
   public function update(int $id, Request $request)
   {
     return $this->userService->update($id, $request->request->all());
   }
 
-  #[Route('users/{id}', name: 'RemoveUser', methods: ['DELETE'])]
+  #[Route('users/{id}', name: 'remove-user', methods: ['DELETE'])]
+  #[IsGranted(attribute: 'ROLE_USER')]
   public function remove(int $id)
   {
     return $this->userService->remove($id);

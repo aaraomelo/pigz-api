@@ -2,13 +2,12 @@
 
 namespace App\Factory;
 
-use App\Entity\User;
 use ErrorException;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class UserValidatorFactory
+class ClassValidatorFactory
 {
   public function __construct(
     private SerializerInterface $serializer,
@@ -16,9 +15,9 @@ class UserValidatorFactory
   ) {
   }
 
-  public function validate(User $user)
+  public function validate($instance)
   {
-    $errors = $this->validator->validate($user);
+    $errors = $this->validator->validate($instance);
     if (count($errors) > 0) {
       $array = json_decode(
         $this->serializer->serialize(

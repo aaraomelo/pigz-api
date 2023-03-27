@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Factory\JsonResponseFactory;
-use App\Factory\UserValidatorFactory;
+use App\Factory\ClassValidatorFactory;
 use App\Repository\UserRepository;
 use DateTime;
 use DateTimeImmutable;
@@ -21,7 +21,7 @@ class UserService
     private ManagerRegistry $managerRegistry,
     private UserPasswordHasherInterface $passwordHasher,
     private JsonResponseFactory $jsonResponseFactory,
-    private UserValidatorFactory $validator,
+    private ClassValidatorFactory $validator,
   ) {
   }
 
@@ -63,7 +63,16 @@ class UserService
     if (!$user instanceof User)
       throw new ErrorException('User not found', 404);
     $user->setName($data['name']);
+    $user->setEmail($data['email']);
+    $user->setEmail($data['password']);
+    $user->setRoles($data['roles']);
     $user->setUpdatedAt(new DateTime('now', new DateTimeZone('America/Sao_Paulo')));
+    $this->validator->validate($user);
+    $hashedPassword = $this->passwordHasher->hashPassword(
+      $user,
+      $data['password']
+    );
+    $user->setPassword($hashedPassword);
     $this->managerRegistry->getManager()->flush();
     return $this->json($user);
   }
