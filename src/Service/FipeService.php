@@ -36,12 +36,12 @@ class FipeService
   public function save(array $data): JsonResponse
   {
     $fipe = new Fipe();
-    $fipe->setName($data['fipe_code']);
+    $fipe->setFipeCode($data['fipe_code']);
     $fipe->setName($data['name']);
-    $fipe->setName($data['brand']);
-    $fipe->setName($data['year']);
-    $fipe->setName($data['fuel']);
-    $fipe->setName($data['price']);
+    $fipe->setBrand($data['brand']);
+    $fipe->setYear($data['year']);
+    $fipe->setFuel($data['fuel']);
+    $fipe->setPrice($data['price']);
     $this->fipeRepository->save($fipe, true);
     return  $this->json($fipe);
   }
@@ -51,12 +51,12 @@ class FipeService
     $fipe = $this->fipeRepository->find($id);
     if (!$fipe instanceof Fipe)
       throw new ErrorException('Fipe not found', 404);
-    $fipe->setName($data['fipe_code']);
-    $fipe->setName($data['name']);
-    $fipe->setName($data['brand']);
-    $fipe->setName($data['year']);
-    $fipe->setName($data['fuel']);
-    $fipe->setName($data['price']);
+      $fipe->setFipeCode($data['fipe_code']);
+      $fipe->setName($data['name']);
+      $fipe->setBrand($data['brand']);
+      $fipe->setYear($data['year']);
+      $fipe->setFuel($data['fuel']);
+      $fipe->setPrice($data['price']);
     $this->managerRegistry->getManager()->flush();
     return $this->json($fipe);
   }

@@ -32,7 +32,7 @@ class ExceptionListener
             $message
         );
         $response->headers->set('Content-Type', 'application/json;charset=UTF-8');
-        $response->setStatusCode($code);
+        $response->setStatusCode($code | 400);
         $event->setResponse($response);
     }
 }

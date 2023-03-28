@@ -15,7 +15,7 @@ class UserController extends AbstractController
   }
 
   #[Route('users', name: 'list-users', methods: ['GET'])]
-  #[IsGranted(attribute: 'ROLE_USER')]
+  #[IsGranted(attribute: 'ROLE_ADMIN')]
   public function index()
   {
     return $this->userService->findAll();

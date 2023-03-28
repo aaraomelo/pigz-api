@@ -28,6 +28,12 @@ class VehicleController extends AbstractController
     return $this->vehicleService->find($id);
   }
 
+  #[Route('vehicles/fipe/{id}', name: 'find-vehicle-with-fipe', methods: ['GET'])]
+  public function findWithFipe(int $id)
+  {
+    return $this->vehicleService->findWithFipe($id);
+  }
+
   #[Route('vehicles', name: 'create-vehicle', methods: ['POST'])]
   #[IsGranted(attribute: 'ROLE_ADMIN')]
   public function create(Request $request)

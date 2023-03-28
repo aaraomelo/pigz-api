@@ -64,7 +64,7 @@ class UserService
       throw new ErrorException('User not found', 404);
     $user->setName($data['name']);
     $user->setEmail($data['email']);
-    $user->setEmail($data['password']);
+    $user->setPassword($data['password']);
     $user->setRoles($data['roles']);
     $user->setUpdatedAt(new DateTime('now', new DateTimeZone('America/Sao_Paulo')));
     $this->validator->validate($user);
